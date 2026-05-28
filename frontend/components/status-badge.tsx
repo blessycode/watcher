@@ -2,34 +2,34 @@ import { cn } from "@/lib/utils"
 
 type StatusType = "operational" | "degraded" | "down" | "paused"
 
-const statusConfig: Record<StatusType, { label: string; dot: string; text: string; bg: string; ring: string }> = {
+const statusConfig: Record<StatusType, { label: string; dot: string; text: string; bg: string; border: string }> = {
   operational: {
     label: "Operational",
-    dot: "bg-emerald-400",
-    text: "text-emerald-300",
-    bg: "bg-emerald-500/10",
-    ring: "ring-emerald-500/20",
+    dot: "bg-[#22C55E]",
+    text: "text-[#22C55E]",
+    bg: "bg-[#22C55E]/10",
+    border: "border-white/5",
   },
   degraded: {
     label: "Degraded",
-    dot: "bg-amber-400",
-    text: "text-amber-300",
-    bg: "bg-amber-500/10",
-    ring: "ring-amber-500/20",
+    dot: "bg-[#F59E0B]",
+    text: "text-[#F59E0B]",
+    bg: "bg-[#F59E0B]/10",
+    border: "border-white/5",
   },
   down: {
     label: "Down",
-    dot: "bg-rose-400",
-    text: "text-rose-300",
-    bg: "bg-rose-500/10",
-    ring: "ring-rose-500/20",
+    dot: "bg-[#EF4444]",
+    text: "text-[#EF4444]",
+    bg: "bg-[#EF4444]/10",
+    border: "border-white/5",
   },
   paused: {
     label: "Paused",
-    dot: "bg-zinc-400",
-    text: "text-zinc-300",
-    bg: "bg-zinc-500/10",
-    ring: "ring-zinc-500/20",
+    dot: "bg-[#9CA3AF]",
+    text: "text-[#9CA3AF]",
+    bg: "bg-white/5",
+    border: "border-white/5",
   },
 }
 
@@ -38,32 +38,32 @@ export function StatusBadge({ status }: { status: StatusType }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset",
+        "inline-flex items-center gap-1.5 rounded border px-2 py-0.5 text-[11px] font-medium tracking-wide transition-colors",
         c.bg,
         c.text,
-        c.ring,
+        c.border,
       )}
     >
-      <span className={cn("h-1.5 w-1.5 rounded-full", c.dot)} />
+      <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", c.dot)} />
       {c.label}
     </span>
   )
 }
 
 const methodColors: Record<string, string> = {
-  GET: "bg-sky-500/10 text-sky-300 ring-sky-500/20",
-  POST: "bg-emerald-500/10 text-emerald-300 ring-emerald-500/20",
-  PUT: "bg-amber-500/10 text-amber-300 ring-amber-500/20",
-  DELETE: "bg-rose-500/10 text-rose-300 ring-rose-500/20",
-  PATCH: "bg-violet-500/10 text-violet-300 ring-violet-500/20",
+  GET:    "bg-[#4F8CFF]/10 text-[#4F8CFF] border-white/5",
+  POST:   "bg-[#22C55E]/10 text-[#22C55E] border-white/5",
+  PUT:    "bg-[#F59E0B]/10 text-[#F59E0B] border-white/5",
+  DELETE: "bg-[#EF4444]/10 text-[#EF4444] border-white/5",
+  PATCH:  "bg-[#A78BFA]/10 text-[#A78BFA] border-white/5",
 }
 
 export function MethodBadge({ method }: { method: string }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center justify-center rounded px-1.5 py-0.5 text-[10px] font-mono font-semibold tracking-wide ring-1 ring-inset",
-        methodColors[method] ?? "bg-zinc-500/10 text-zinc-300 ring-zinc-500/20",
+        "inline-flex items-center justify-center rounded border px-1.5 py-0.5 text-[10px] font-mono font-semibold tracking-wide",
+        methodColors[method] ?? "bg-white/5 text-[#9CA3AF] border-white/5",
       )}
     >
       {method}
@@ -71,11 +71,11 @@ export function MethodBadge({ method }: { method: string }) {
   )
 }
 
-const severityConfig = {
-  critical: "bg-rose-500/10 text-rose-300 ring-rose-500/20",
-  high: "bg-orange-500/10 text-orange-300 ring-orange-500/20",
-  medium: "bg-amber-500/10 text-amber-300 ring-amber-500/20",
-  low: "bg-sky-500/10 text-sky-300 ring-sky-500/20",
+const severityConfig: Record<string, string> = {
+  critical: "bg-[#EF4444]/10 text-[#EF4444] border-white/5",
+  high:     "bg-[#F97316]/10 text-[#F97316] border-white/5",
+  medium:   "bg-[#F59E0B]/10 text-[#F59E0B] border-white/5",
+  low:      "bg-[#4F8CFF]/10 text-[#4F8CFF] border-white/5",
 }
 
 export function SeverityBadge({
@@ -86,7 +86,7 @@ export function SeverityBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ring-1 ring-inset",
+        "inline-flex items-center rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
         severityConfig[severity],
       )}
     >
@@ -95,18 +95,18 @@ export function SeverityBadge({
   )
 }
 
-const incidentStatusConfig = {
-  investigating: "bg-rose-500/10 text-rose-300 ring-rose-500/20",
-  identified: "bg-amber-500/10 text-amber-300 ring-amber-500/20",
-  monitoring: "bg-sky-500/10 text-sky-300 ring-sky-500/20",
-  resolved: "bg-emerald-500/10 text-emerald-300 ring-emerald-500/20",
+const incidentStatusConfig: Record<string, string> = {
+  investigating: "bg-[#EF4444]/10 text-[#EF4444] border-white/5",
+  identified:    "bg-[#F59E0B]/10 text-[#F59E0B] border-white/5",
+  monitoring:    "bg-[#4F8CFF]/10 text-[#4F8CFF] border-white/5",
+  resolved:      "bg-[#22C55E]/10 text-[#22C55E] border-white/5",
 }
 
-const incidentStatusLabel = {
+const incidentStatusLabel: Record<string, string> = {
   investigating: "Investigating",
-  identified: "Identified",
-  monitoring: "Monitoring",
-  resolved: "Resolved",
+  identified:    "Identified",
+  monitoring:    "Monitoring",
+  resolved:      "Resolved",
 }
 
 export function IncidentStatusBadge({
@@ -117,7 +117,7 @@ export function IncidentStatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ring-1 ring-inset",
+        "inline-flex items-center rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
         incidentStatusConfig[status],
       )}
     >
