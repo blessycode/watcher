@@ -1,7 +1,7 @@
 export type UserRole = "owner" | "admin" | "member" | "viewer"
 export type ProjectEnvironment = "production" | "staging" | "development"
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD"
-export type MonitorStatus = "operational" | "degraded" | "down" | "paused"
+export type MonitorStatus = "operational" | "degraded" | "down" | "paused" | "unknown"
 export type IncidentStatus = "investigating" | "identified" | "monitoring" | "resolved"
 export type IncidentSeverity = "critical" | "high" | "medium" | "low"
 export type AlertChannelType = "email" | "slack" | "discord" | "webhook" | "telegram"
@@ -42,8 +42,9 @@ export interface Monitor {
   status: MonitorStatus
   uptime_percentage: number
   avg_latency_ms: number
-  last_checked_at: string
+  last_checked_at: string | null
   created_at: string
+  headers?: MonitorHeader[]
 }
 
 export interface MonitorHeader {

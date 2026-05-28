@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils"
 
-type StatusType = "operational" | "degraded" | "down" | "paused"
+type StatusType = "operational" | "degraded" | "down" | "paused" | "unknown"
 
 const statusConfig: Record<StatusType, { label: string; dot: string; text: string; bg: string; border: string }> = {
   operational: {
@@ -31,10 +31,17 @@ const statusConfig: Record<StatusType, { label: string; dot: string; text: strin
     bg: "bg-white/5",
     border: "border-white/5",
   },
+  unknown: {
+    label: "Unknown",
+    dot: "bg-[#9CA3AF]",
+    text: "text-[#9CA3AF]",
+    bg: "bg-white/5",
+    border: "border-white/5",
+  },
 }
 
-export function StatusBadge({ status }: { status: StatusType }) {
-  const c = statusConfig[status]
+export function StatusBadge({ status }: { status: StatusType | string }) {
+  const c = statusConfig[(status as StatusType)] ?? statusConfig.unknown
   return (
     <span
       className={cn(

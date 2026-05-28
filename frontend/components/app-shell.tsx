@@ -20,7 +20,7 @@ import {
   CalendarDays,
   SlidersHorizontal,
 } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
 import { WatcherLogo } from "@/components/watcher-logo"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -36,6 +36,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { getCurrentUser, getIncidents, getMonitors, getProjects, hasAuthToken, logout } from "@/lib/api"
+import type { User } from "@/lib/types"
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, kbd: "D" },
@@ -49,6 +51,18 @@ const navigation = [
 
 function SidebarNav() {
   const pathname = usePathname()
+  const [counts, setCounts] = useState({ projects: 0, monitors: 0, incidents: 0 })
+  useEffect(() => {
+    Promise.all([getProjects(), getMonitors(), getIncidents()])
+      .then(([projects, monitors, incidents]) =>
+        setCounts({
+          projects: projects.length,
+          monitors: monitors.length,
+          incidents: incidents.filter((incident) => incident.status !== "resolved").length,
+        }),
+      )
+      .catch(() => undefined)
+  }, [])
   return (
     <div className="flex h-full flex-col bg-[#090A0B]">
       {/* Logo */}
@@ -94,6 +108,14 @@ function SidebarNav() {
           {navigation.map((item) => {
             const Icon = item.icon
             const active = pathname === item.href || pathname.startsWith(item.href + "/")
+            const liveBadge =
+              item.href === "/projects"
+                ? counts.projects
+                : item.href === "/monitors"
+                  ? counts.monitors
+                  : item.href === "/incidents"
+                    ? counts.incidents
+                    : null
             return (
               <li key={item.href}>
                 <Link
@@ -107,7 +129,7 @@ function SidebarNav() {
                 >
                   <Icon className={cn("h-3.5 w-3.5 shrink-0 transition-colors", active ? "text-[#4F8CFF]" : "text-[#9CA3AF] group-hover:text-[#F3F4F6]")} />
                   <span className="flex-1">{item.name}</span>
-                  {item.badge && (
+                  {liveBadge !== null && (
                     <span
                       className={cn(
                         "min-w-[16px] h-4 px-1 inline-flex items-center justify-center rounded text-[9px] font-medium tabular-nums border",
@@ -116,7 +138,7 @@ function SidebarNav() {
                           : "bg-[#151618] text-[#9CA3AF] border-white/5",
                       )}
                     >
-                      {item.badge}
+                      {liveBadge}
                     </span>
                   )}
                   {item.kbd && (
@@ -187,6 +209,16 @@ function SidebarNav() {
 }
 
 function TopBar() {
+  const [user, setUser] = useState<User | null>(null)
+  useEffect(() => {
+    getCurrentUser().then(setUser).catch(() => undefined)
+  }, [])
+
+  async function signOut() {
+    await logout().catch(() => undefined)
+    window.location.href = "/login"
+  }
+
   return (
     <div className="h-11 border-b border-white/5 bg-[#151618] sticky top-0 z-20">
       <div className="h-full px-4 lg:px-6 flex items-center gap-3">
@@ -247,15 +279,15 @@ function TopBar() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-52 bg-[#151618] border-white/5 text-[#F3F4F6]">
               <DropdownMenuLabel>
-                <div className="text-[12px] font-medium">Jordan Davis</div>
-                <div className="text-[10px] text-[#9CA3AF] font-normal">jordan@acme.com</div>
+                <div className="text-[12px] font-medium">{user?.name ?? "Watcher user"}</div>
+                <div className="text-[10px] text-[#9CA3AF] font-normal">{user?.email ?? "Signed in"}</div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-white/5" />
               <DropdownMenuItem asChild className="hover:bg-[#1E2024] text-xs"><Link href="/settings">Profile settings</Link></DropdownMenuItem>
               <DropdownMenuItem className="hover:bg-[#1E2024] text-xs">Keyboard shortcuts</DropdownMenuItem>
               <DropdownMenuItem asChild className="hover:bg-[#1E2024] text-xs"><Link href="/docs">Documentation</Link></DropdownMenuItem>
               <DropdownMenuSeparator className="bg-white/5" />
-              <DropdownMenuItem asChild className="hover:bg-[#1E2024] text-xs"><Link href="/login">Log out</Link></DropdownMenuItem>
+              <DropdownMenuItem onClick={signOut} className="hover:bg-[#1E2024] text-xs">Log out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -265,6 +297,23 @@ function TopBar() {
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
+  const [ready, setReady] = useState(false)
+  useEffect(() => {
+    if (!hasAuthToken()) {
+      window.location.href = "/login"
+      return
+    }
+    getCurrentUser()
+      .then(() => setReady(true))
+      .catch(() => {
+        window.location.href = "/login"
+      })
+  }, [])
+
+  if (!ready) {
+    return <div className="min-h-screen bg-[#0C0D0E] p-8 text-sm text-[#9CA3AF]">Loading Watcher workspace...</div>
+  }
+
   return (
     <div className="min-h-screen bg-[#0C0D0E] text-[#F3F4F6]">
       <aside className="fixed inset-y-0 left-0 hidden w-56 border-r border-white/5 bg-[#090A0B] lg:block">

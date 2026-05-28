@@ -27,10 +27,10 @@ const navItems = [
 ]
 
 const faqs = [
-  ["Is Watcher open source?", "Yes. This frontend presents Watcher as an open-source API monitoring platform using realistic mock data."],
-  ["Can it monitor private APIs?", "The UI supports headers, regions, timeouts, and alert channels, ready for private API integration."],
-  ["Does it include status pages?", "Yes. Watcher includes status page management and clean public status pages."],
-  ["Is this connected to real checks?", "Not yet. The implementation uses mock data only and is ready to connect to backend APIs."],
+  ["Is Watcher open source?", "Yes. Watcher is structured as an open-source API monitoring platform with a FastAPI backend."],
+  ["Can it monitor private APIs?", "The backend validates monitor URLs and can block private targets in production to reduce SSRF risk."],
+  ["Does it include status pages?", "Yes. Watcher includes status page management and public status pages backed by your database."],
+  ["Is this connected to real checks?", "Yes. The dashboard connects to your local backend, Postgres database, and real HTTP monitor checks."],
 ]
 
 export default function LandingPage() {
