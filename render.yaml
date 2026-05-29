@@ -1,0 +1,123 @@
+services:
+  - type: web
+    name: watcher-api
+    runtime: python
+    rootDir: backend
+    plan: free
+    autoDeploy: true
+    buildCommand: pip install -r requirements.txt && alembic -c alembic.ini upgrade head
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: ENVIRONMENT
+        value: production
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "60"
+      - key: ALLOW_PRIVATE_MONITORING
+        value: "false"
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: BACKEND_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: ALERT_EMAIL_FROM
+        sync: false
+      - key: ALERT_EMAIL_REPLY_TO
+        sync: false
+      - key: GITHUB_CLIENT_ID
+        sync: false
+      - key: GITHUB_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+
+  - type: worker
+    name: watcher-celery-worker
+    runtime: python
+    rootDir: backend
+    plan: free
+    autoDeploy: true
+    buildCommand: pip install -r requirements.txt
+    startCommand: celery -A app.workers.celery_app.celery_app worker -Q monitoring --loglevel=info
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: ENVIRONMENT
+        value: production
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "60"
+      - key: ALLOW_PRIVATE_MONITORING
+        value: "false"
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: BACKEND_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: ALERT_EMAIL_FROM
+        sync: false
+      - key: ALERT_EMAIL_REPLY_TO
+        sync: false
+
+  - type: worker
+    name: watcher-celery-beat
+    runtime: python
+    rootDir: backend
+    plan: free
+    autoDeploy: true
+    buildCommand: pip install -r requirements.txt
+    startCommand: celery -A app.workers.celery_app.celery_app beat --loglevel=info
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: ENVIRONMENT
+        value: production
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "60"
+      - key: ALLOW_PRIVATE_MONITORING
+        value: "false"
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: BACKEND_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: ALERT_EMAIL_FROM
+        sync: false
+      - key: ALERT_EMAIL_REPLY_TO
+        sync: false
