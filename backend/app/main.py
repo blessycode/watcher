@@ -1,7 +1,10 @@
 from fastapi import FastAPI
+from sqlalchemy import text
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
+from app.db.database import engine
+from app.middleware.request_id import RequestIDMiddleware
 from app.routes import alert_channels, analytics, api_keys, auth, incidents, monitors, onboarding, projects, status_pages
 
 
@@ -18,6 +21,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(RequestIDMiddleware)
 
 app.include_router(auth.router)
 app.include_router(projects.router)
@@ -38,3 +42,10 @@ def root():
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}
+
+
+@app.get("/ready")
+def readiness_check():
+    with engine.connect() as connection:
+        connection.execute(text("SELECT 1"))
+    return {"status": "ready", "database": "ok"}

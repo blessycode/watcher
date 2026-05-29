@@ -1,22 +1,40 @@
 "use client"
 
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { ArrowRight, Github, LockKeyhole } from "lucide-react"
-import { FormEvent, useState } from "react"
+import { FormEvent, Suspense, useEffect, useState } from "react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { WatcherLogo } from "@/components/watcher-logo"
-import { login } from "@/lib/api"
+import { getCurrentUser, hasAuthToken, login } from "@/lib/api"
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<main className="min-h-screen bg-background p-8 text-sm text-muted-foreground">Loading...</main>}>
+      <LoginPageInner />
+    </Suspense>
+  )
+}
+
+function LoginPageInner() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (hasAuthToken()) {
+      getCurrentUser()
+        .then(() => router.replace(searchParams.get("next") || "/dashboard"))
+        .catch(() => undefined)
+    }
+  }, [router, searchParams])
 
   async function submit(event: FormEvent) {
     event.preventDefault()
@@ -24,9 +42,14 @@ export default function LoginPage() {
     setError("")
     try {
       await login(email, password)
-      router.push("/dashboard")
+      toast.success("Signed in", {
+        description: "Your Watcher session is active.",
+      })
+      router.push(searchParams.get("next") || "/dashboard")
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to log in")
+      const message = err instanceof Error ? err.message : "Unable to log in"
+      setError(message)
+      toast.error("Login failed", { description: message })
     } finally {
       setLoading(false)
     }

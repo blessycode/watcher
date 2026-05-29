@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Environment
+.env
+.env.*
+!.env.example
+!backend/.env.example
+!frontend/.env.example
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Runtime
+celerybeat-schedule
+*.log

@@ -36,7 +36,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { getCurrentUser, getIncidents, getMonitors, getProjects, hasAuthToken, logout } from "@/lib/api"
+import { getCachedUser, getCurrentUser, getIncidents, getMonitors, getProjects, logout } from "@/lib/api"
 import type { User } from "@/lib/types"
 
 const navigation = [
@@ -209,7 +209,7 @@ function SidebarNav() {
 }
 
 function TopBar() {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<User | null>(() => getCachedUser())
   useEffect(() => {
     getCurrentUser().then(setUser).catch(() => undefined)
   }, [])
@@ -297,23 +297,6 @@ function TopBar() {
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const [ready, setReady] = useState(false)
-  useEffect(() => {
-    if (!hasAuthToken()) {
-      window.location.href = "/login"
-      return
-    }
-    getCurrentUser()
-      .then(() => setReady(true))
-      .catch(() => {
-        window.location.href = "/login"
-      })
-  }, [])
-
-  if (!ready) {
-    return <div className="min-h-screen bg-[#0C0D0E] p-8 text-sm text-[#9CA3AF]">Loading Watcher workspace...</div>
-  }
-
   return (
     <div className="min-h-screen bg-[#0C0D0E] text-[#F3F4F6]">
       <aside className="fixed inset-y-0 left-0 hidden w-56 border-r border-white/5 bg-[#090A0B] lg:block">

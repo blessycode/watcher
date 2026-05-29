@@ -44,6 +44,8 @@ def get_project(project_id: UUID, db: Session = Depends(get_db), current_user: U
 @router.put("/{project_id}", response_model=ProjectRead)
 def update_project(project_id: UUID, payload: ProjectUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     project = get_owned_project(db, project_id, current_user)
+    if payload.slug and db.query(Project).filter(Project.slug == payload.slug, Project.id != project.id).first():
+        raise HTTPException(status_code=409, detail="Project slug already exists")
     for key, value in payload.model_dump(exclude_unset=True).items():
         setattr(project, key, value)
     db.commit()

@@ -1,18 +1,28 @@
 "use client"
 
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { ArrowRight, PlusCircle } from "lucide-react"
-import { FormEvent, useState } from "react"
+import { FormEvent, Suspense, useEffect, useState } from "react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { WatcherLogo } from "@/components/watcher-logo"
-import { register } from "@/lib/api"
+import { bootstrapWorkspace, getCurrentUser, hasAuthToken, register } from "@/lib/api"
 
 export default function RegisterPage() {
+  return (
+    <Suspense fallback={<main className="min-h-screen bg-background p-8 text-sm text-muted-foreground">Loading...</main>}>
+      <RegisterPageInner />
+    </Suspense>
+  )
+}
+
+function RegisterPageInner() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -20,15 +30,29 @@ export default function RegisterPage() {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
+  useEffect(() => {
+    if (hasAuthToken()) {
+      getCurrentUser()
+        .then(() => router.replace(searchParams.get("next") || "/dashboard"))
+        .catch(() => undefined)
+    }
+  }, [router, searchParams])
+
   async function submit(event: FormEvent) {
     event.preventDefault()
     setLoading(true)
     setError("")
     try {
       await register({ name, email, password, confirm_password: confirm })
-      router.push("/dashboard")
+      toast.success("Account created", {
+        description: "Your Watcher session is ready. Preparing your workspace...",
+      })
+      await bootstrapWorkspace().catch(() => undefined)
+      router.push(searchParams.get("next") || "/dashboard")
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to create account")
+      const message = err instanceof Error ? err.message : "Unable to create account"
+      setError(message)
+      toast.error("Registration failed", { description: message })
     } finally {
       setLoading(false)
     }
@@ -64,7 +88,7 @@ export default function RegisterPage() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="password">Password</Label>
-                    <Input id="password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} required placeholder="8+ characters" className="h-11 rounded-xl bg-secondary/70" />
+                    <Input id="password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} required placeholder="8+ chars, letters + numbers" className="h-11 rounded-xl bg-secondary/70" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="confirm">Confirm</Label>

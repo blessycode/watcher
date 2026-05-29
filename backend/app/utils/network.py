@@ -11,7 +11,7 @@ def validate_monitor_url(url: str) -> None:
     parsed = urlparse(url)
     if parsed.scheme not in {"http", "https"} or not parsed.hostname:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Monitor URL must be http or https")
-    if settings.ENVIRONMENT != "production" or settings.ALLOW_PRIVATE_MONITORING:
+    if settings.ENVIRONMENT != "production" and settings.ALLOW_PRIVATE_MONITORING:
         return
     try:
         addresses = socket.getaddrinfo(parsed.hostname, None)

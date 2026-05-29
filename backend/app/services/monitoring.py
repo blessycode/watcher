@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session, selectinload
 
 from app.models import Check, Incident, Monitor
 from app.services.alerts import trigger_incident_alerts
+from app.services.status_pages import update_status_pages_for_project
 from app.utils.crypto import decrypt_value
 from app.utils.network import validate_monitor_url
 
@@ -103,6 +104,7 @@ def run_monitor_check(db: Session, monitor_id) -> Check:
     failed_count = consecutive_failures(db, monitor.id)
     monitor.last_checked_at = checked_at
     refresh_monitor_stats(db, monitor, failed_count)
+    update_status_pages_for_project(db, monitor.project_id)
 
     incident = open_incident(db, monitor.id)
     if failed_count >= 3 and incident is None:

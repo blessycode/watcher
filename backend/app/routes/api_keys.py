@@ -1,5 +1,7 @@
 from uuid import UUID
 
+from datetime import UTC, datetime
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -34,6 +36,6 @@ def revoke_api_key(api_key_id: UUID, db: Session = Depends(get_db), current_user
     api_key = db.query(APIKey).filter(APIKey.id == api_key_id, APIKey.user_id == current_user.id).first()
     if api_key is None:
         raise HTTPException(status_code=404, detail="API key not found")
-    db.delete(api_key)
+    api_key.revoked_at = datetime.now(UTC)
     db.commit()
     return DeleteResponse(id=api_key_id)

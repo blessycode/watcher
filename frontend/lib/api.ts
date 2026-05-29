@@ -14,6 +14,7 @@ import type {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"
 const TOKEN_KEY = "watcher_access_token"
+const USER_KEY = "watcher_current_user"
 
 type RequestOptions = RequestInit & { auth?: boolean }
 
@@ -32,6 +33,30 @@ function setToken(token: string) {
   }
 }
 
+function setCachedUser(user: User) {
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(USER_KEY, JSON.stringify(user))
+  }
+}
+
+export function getCachedUser(): User | null {
+  if (typeof window === "undefined") return null
+  const raw = window.localStorage.getItem(USER_KEY)
+  if (!raw) return null
+  try {
+    return JSON.parse(raw) as User
+  } catch {
+    return null
+  }
+}
+
+export function clearAuthToken() {
+  if (typeof window !== "undefined") {
+    window.localStorage.removeItem(TOKEN_KEY)
+    window.localStorage.removeItem(USER_KEY)
+  }
+}
+
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const headers = new Headers(options.headers)
   headers.set("Content-Type", "application/json")
@@ -44,10 +69,22 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     headers,
   })
   if (!response.ok) {
+    if (response.status === 401 && options.auth !== false) {
+      clearAuthToken()
+    }
     let message = `Request failed with ${response.status}`
     try {
       const body = await response.json()
-      message = body.detail ?? message
+      if (Array.isArray(body.detail)) {
+        message = body.detail
+          .map((item: any) => {
+            const field = Array.isArray(item.loc) ? item.loc.filter((part: string) => part !== "body").join(".") : ""
+            return field ? `${field}: ${item.msg}` : item.msg
+          })
+          .join("; ")
+      } else if (typeof body.detail === "string") {
+        message = body.detail
+      }
     } catch {
       // Keep the HTTP fallback message.
     }
@@ -64,7 +101,9 @@ async function authenticate(path: "/auth/login" | "/auth/register", body: object
     auth: false,
   })
   setToken(token.access_token)
-  return getCurrentUser()
+  const user = await getCurrentUser()
+  setCachedUser(user)
+  return user
 }
 
 export async function login(email: string, password: string): Promise<User> {
@@ -77,12 +116,17 @@ export async function register(input: { name: string; email: string; password: s
 }
 
 export async function logout(): Promise<{ ok: true }> {
-  if (typeof window !== "undefined") window.localStorage.removeItem(TOKEN_KEY)
-  return request<{ ok: true }>("/auth/logout", { method: "POST", auth: false })
+  try {
+    return await request<{ ok: true }>("/auth/logout", { method: "POST" })
+  } finally {
+    clearAuthToken()
+  }
 }
 
 export async function getCurrentUser(): Promise<User> {
-  return request<User>("/auth/me")
+  const user = await request<User>("/auth/me")
+  setCachedUser(user)
+  return user
 }
 
 export async function getProjects(): Promise<Project[]> {

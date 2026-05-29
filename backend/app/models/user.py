@@ -21,3 +21,4 @@ class User(Base):
     projects = relationship("Project", back_populates="user", cascade="all, delete-orphan")
     alert_channels = relationship("AlertChannel", back_populates="user", cascade="all, delete-orphan")
     api_keys = relationship("APIKey", back_populates="user", cascade="all, delete-orphan")
+    sessions = relationship("UserSession", back_populates="user", cascade="all, delete-orphan")

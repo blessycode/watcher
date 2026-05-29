@@ -39,7 +39,12 @@ def create_alert_channel(payload: AlertChannelCreate, db: Session = Depends(get_
 @router.put("/{channel_id}", response_model=AlertChannelRead)
 def update_alert_channel(channel_id: UUID, payload: AlertChannelUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     channel = get_owned_channel(db, channel_id, current_user)
-    for key, value in payload.model_dump(exclude_unset=True).items():
+    data = payload.model_dump(exclude_unset=True)
+    next_type = data.get("type", channel.type)
+    next_destination = data.get("destination", channel.destination)
+    if next_type == "email" and "@" not in next_destination:
+        raise HTTPException(status_code=422, detail="Email alert destinations must be valid email addresses")
+    for key, value in data.items():
         setattr(channel, key, value)
     db.commit()
     db.refresh(channel)

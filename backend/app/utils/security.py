@@ -5,7 +5,7 @@ import hmac
 import json
 import os
 from secrets import token_urlsafe
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session
 
 from app.config import settings
 from app.db.database import get_db
-from app.models import User
+from app.models import User, UserSession
 
 
 bearer_scheme = HTTPBearer(auto_error=False)
@@ -79,15 +79,21 @@ def _fallback_decode(token: str, secret: str) -> dict:
 
 def hash_password(password: str) -> str:
     if password_context is not None:
-        return password_context.hash(password)
+        try:
+            return password_context.hash(password)
+        except Exception:
+            pass
     salt = os.urandom(16)
     digest = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt, 260000)
     return f"pbkdf2_sha256${_b64encode(salt)}${_b64encode(digest)}"
 
 
 def verify_password(password: str, password_hash: str) -> bool:
-    if password_context is not None:
-        return password_context.verify(password, password_hash)
+    if password_context is not None and not password_hash.startswith("pbkdf2_sha256$"):
+        try:
+            return password_context.verify(password, password_hash)
+        except Exception:
+            return False
     try:
         scheme, salt, digest = password_hash.split("$")
         if scheme != "pbkdf2_sha256":
@@ -98,9 +104,15 @@ def verify_password(password: str, password_hash: str) -> bool:
         return False
 
 
-def create_access_token(user_id: UUID) -> tuple[str, datetime]:
+def _hash_token(token: str) -> str:
+    return hashlib.sha256(token.encode("utf-8")).hexdigest()
+
+
+def create_access_token(user_id: UUID, session_id: UUID | None = None) -> tuple[str, datetime]:
     expires_at = datetime.now(UTC) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     payload = {"sub": str(user_id), "exp": expires_at}
+    if session_id is not None:
+        payload["jti"] = str(session_id)
     if jose_jwt is not None:
         token = jose_jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
     else:
@@ -108,10 +120,32 @@ def create_access_token(user_id: UUID) -> tuple[str, datetime]:
     return token, expires_at
 
 
-def get_current_user(
+def create_user_session_token(
+    db: Session,
+    user: User,
+    user_agent: str | None = None,
+    ip_address: str | None = None,
+) -> tuple[str, datetime]:
+    session_id = uuid4()
+    token, expires_at = create_access_token(user.id, session_id)
+    db.add(
+        UserSession(
+            id=session_id,
+            user_id=user.id,
+            token_hash=_hash_token(token),
+            user_agent=user_agent,
+            ip_address=ip_address,
+            expires_at=expires_at,
+        )
+    )
+    db.commit()
+    return token, expires_at
+
+
+def get_current_session(
     credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
     db: Session = Depends(get_db),
-) -> User:
+) -> UserSession:
     if credentials is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
     try:
@@ -120,16 +154,33 @@ def get_current_user(
         else:
             payload = _fallback_decode(credentials.credentials, settings.SECRET_KEY)
         user_id = payload.get("sub")
+        session_id = payload.get("jti")
     except (JWTError, JoseJWTError) as exc:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token") from exc
     try:
         user_uuid = UUID(user_id)
+        session_uuid = UUID(session_id)
     except (TypeError, ValueError) as exc:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token") from exc
-    user = db.get(User, user_uuid)
-    if user is None:
+
+    session_obj = db.get(UserSession, session_uuid)
+    now = datetime.now(UTC)
+    if (
+        session_obj is None
+        or session_obj.user_id != user_uuid
+        or session_obj.revoked_at is not None
+        or session_obj.expires_at < now
+        or not hmac.compare_digest(session_obj.token_hash, _hash_token(credentials.credentials))
+    ):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-    return user
+    session_obj.last_seen_at = now
+    return session_obj
+
+
+def get_current_user(current_session: UserSession = Depends(get_current_session)) -> User:
+    if current_session.user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+    return current_session.user
 
 
 def generate_api_key() -> tuple[str, str]:

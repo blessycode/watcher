@@ -3,6 +3,7 @@ from app.models.check import Check
 from app.models.incident import Incident
 from app.models.monitor import Monitor, MonitorHeader
 from app.models.project import Project
+from app.models.session import UserSession
 from app.models.status_page import APIKey, StatusPage
 from app.models.user import User
 
@@ -17,4 +18,5 @@ __all__ = [
     "Project",
     "StatusPage",
     "User",
+    "UserSession",
 ]

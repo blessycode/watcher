@@ -7,6 +7,7 @@ from app.db.database import get_db
 from app.models import Incident, Monitor, Project, StatusPage, User
 from app.schemas.common import DeleteResponse
 from app.schemas.status_page import PublicStatusPage, StatusPageCreate, StatusPageRead, StatusPageUpdate
+from app.services.status_pages import rollup_project_status
 from app.utils.security import get_current_user
 
 
@@ -41,7 +42,7 @@ def create_status_page(payload: StatusPageCreate, db: Session = Depends(get_db),
     ensure_project(db, payload.project_id, current_user)
     if db.query(StatusPage).filter(StatusPage.slug == payload.slug).first():
         raise HTTPException(status_code=409, detail="Status page slug already exists")
-    page = StatusPage(**payload.model_dump())
+    page = StatusPage(**payload.model_dump(), overall_status=rollup_project_status(db, payload.project_id))
     db.add(page)
     db.commit()
     db.refresh(page)
@@ -56,6 +57,8 @@ def get_status_page(page_id: UUID, db: Session = Depends(get_db), current_user: 
 @router.put("/status-pages/{page_id}", response_model=StatusPageRead)
 def update_status_page(page_id: UUID, payload: StatusPageUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     page = get_owned_page(db, page_id, current_user)
+    if payload.slug and db.query(StatusPage).filter(StatusPage.slug == payload.slug, StatusPage.id != page.id).first():
+        raise HTTPException(status_code=409, detail="Status page slug already exists")
     for key, value in payload.model_dump(exclude_unset=True).items():
         setattr(page, key, value)
     db.commit()
