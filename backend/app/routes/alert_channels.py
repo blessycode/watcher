@@ -9,6 +9,7 @@ from app.db.database import get_db
 from app.models import AlertChannel, User
 from app.schemas.alert import AlertChannelCreate, AlertChannelRead, AlertChannelUpdate
 from app.schemas.common import DeleteResponse
+from app.services.email import EmailDeliveryError, send_resend_email
 from app.utils.security import get_current_user
 
 
@@ -62,6 +63,20 @@ def delete_alert_channel(channel_id: UUID, db: Session = Depends(get_db), curren
 @router.post("/{channel_id}/test")
 def test_alert_channel(channel_id: UUID, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     channel = get_owned_channel(db, channel_id, current_user)
-    channel.last_triggered_at = datetime.now(UTC)
-    db.commit()
-    return {"id": channel.id, "status": "sent", "sent_at": channel.last_triggered_at}
+    now = datetime.now(UTC)
+    if channel.type == "email":
+        try:
+            message_id = send_resend_email(
+                channel.destination,
+                "[Watcher] Test alert",
+                (
+                    "This is a Watcher test alert.\n\n"
+                    "If you received this email, your Resend alert delivery is configured correctly."
+                ),
+            )
+        except EmailDeliveryError as exc:
+            raise HTTPException(status_code=502, detail=str(exc)) from exc
+        channel.last_triggered_at = now
+        db.commit()
+        return {"id": channel.id, "status": "sent", "sent_at": channel.last_triggered_at, "provider": "resend", "provider_message_id": message_id}
+    raise HTTPException(status_code=501, detail=f"{channel.type} test delivery is not implemented yet")

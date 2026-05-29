@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -32,5 +32,8 @@ class Alert(Base):
     recipient = Column(String(500), nullable=False)
     status = Column(String(30), default="queued", nullable=False)
     sent_at = Column(DateTime(timezone=True), nullable=True)
+    provider = Column(String(50), nullable=True)
+    provider_message_id = Column(String(255), nullable=True)
+    error_message = Column(Text, nullable=True)
 
     incident = relationship("Incident", back_populates="alerts")

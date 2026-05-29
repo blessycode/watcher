@@ -66,3 +66,6 @@ class AlertRead(ORMModel):
     recipient: str
     status: str
     sent_at: datetime | None
+    provider: str | None = None
+    provider_message_id: str | None = None
+    error_message: str | None = None

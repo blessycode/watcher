@@ -115,6 +115,15 @@ export async function register(input: { name: string; email: string; password: s
   return authenticate("/auth/register", { name: input.name, email: input.email, password: input.password })
 }
 
+export function getOAuthStartUrl(provider: "google") {
+  return `${API_BASE_URL}/auth/oauth/${provider}/start`
+}
+
+export async function completeOAuthLogin(accessToken: string): Promise<User> {
+  setToken(accessToken)
+  return getCurrentUser()
+}
+
 export async function logout(): Promise<{ ok: true }> {
   try {
     return await request<{ ok: true }>("/auth/logout", { method: "POST" })

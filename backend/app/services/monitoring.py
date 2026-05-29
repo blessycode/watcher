@@ -72,13 +72,14 @@ def run_monitor_check(db: Session, monitor_id) -> Check:
     started = perf_counter()
     try:
         validate_monitor_url(monitor.url)
-        response = httpx.request(
-            monitor.method,
-            monitor.url,
-            headers=headers_for_monitor(monitor),
-            timeout=monitor.timeout_seconds,
-            follow_redirects=True,
-        )
+        timeout_seconds = min(max(monitor.timeout_seconds, 1), 10)
+        timeout = httpx.Timeout(timeout_seconds, connect=min(timeout_seconds, 3))
+        with httpx.Client(timeout=timeout, follow_redirects=True, trust_env=False) as client:
+            response = client.request(
+                monitor.method,
+                monitor.url,
+                headers=headers_for_monitor(monitor),
+            )
         latency_ms = round((perf_counter() - started) * 1000, 2)
         status_code = response.status_code
         success = status_code == monitor.expected_status

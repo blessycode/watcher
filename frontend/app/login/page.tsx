@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { ArrowRight, Github, LockKeyhole } from "lucide-react"
+import { ArrowRight, LockKeyhole } from "lucide-react"
 import { FormEvent, Suspense, useEffect, useState } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { WatcherLogo } from "@/components/watcher-logo"
-import { getCurrentUser, hasAuthToken, login } from "@/lib/api"
+import { getCurrentUser, getOAuthStartUrl, hasAuthToken, login } from "@/lib/api"
 
 export default function LoginPage() {
   return (
@@ -33,6 +33,11 @@ function LoginPageInner() {
       getCurrentUser()
         .then(() => router.replace(searchParams.get("next") || "/dashboard"))
         .catch(() => undefined)
+    }
+    const error = searchParams.get("error")
+    if (error) {
+      setError(error)
+      toast.error("Social login failed", { description: error })
     }
   }, [router, searchParams])
 
@@ -81,9 +86,10 @@ function LoginPageInner() {
             <div className="rounded-[2rem] border border-border bg-card/90 p-5 shadow-2xl shadow-black/35 backdrop-blur-xl sm:p-7">
               <h2 className="text-2xl font-semibold tracking-tight">Log in</h2>
               <p className="mt-1.5 text-sm text-muted-foreground">Use your Watcher account credentials.</p>
-              <div className="mt-7 grid grid-cols-2 gap-2">
-                <Button variant="outline" className="h-11 rounded-xl border-border bg-secondary/70" type="button"><Github className="mr-2 h-4 w-4" />GitHub</Button>
-                <Button variant="outline" className="h-11 rounded-xl border-border bg-secondary/70" type="button">Google</Button>
+              <div className="mt-7 grid gap-2">
+                <Button asChild variant="outline" className="h-11 rounded-xl border-border bg-secondary/70">
+                  <a href={getOAuthStartUrl("google")}>Google</a>
+                </Button>
               </div>
               <div className="my-6 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
                 <div className="h-px flex-1 bg-border" /> Email <div className="h-px flex-1 bg-border" />

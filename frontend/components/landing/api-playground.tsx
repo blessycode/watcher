@@ -13,8 +13,8 @@ const presetEndpoints = [
     type: "success",
   },
   {
-    name: "GitHub Octocat API",
-    url: "https://api.github.com/users/octocat",
+    name: "HTTPBin Health API",
+    url: "https://httpbin.org/status/200",
     method: "GET",
     expectedStatus: 200,
     type: "success",

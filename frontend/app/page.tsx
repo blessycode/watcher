@@ -22,7 +22,6 @@ const navItems = [
   ["Product", "#product"],
   ["Docs", "/docs"],
   ["FAQ", "#faq"],
-  ["GitHub", "https://github.com"],
   ["Pricing", "#cta"],
 ]
 
@@ -432,7 +431,6 @@ function Footer() {
         ["Documentation", "/docs"],
         ["API Reference", "/docs"],
         ["Public Status", "/status/acme-cloud"],
-        ["GitHub", "https://github.com"],
         ["FAQ", "#faq"],
       ],
     },
@@ -449,7 +447,6 @@ function Footer() {
     {
       title: "Company",
       links: [
-        ["Open Source", "https://github.com"],
         ["Security", "/docs"],
         ["Changelog", "/docs"],
         ["Support", "mailto:support@watcher.dev"],
@@ -500,9 +497,9 @@ function Footer() {
             <Link href="/docs" className="hover:text-foreground">Privacy</Link>
             <Link href="/docs" className="hover:text-foreground">Terms</Link>
             <Link href="/docs" className="hover:text-foreground">Security</Link>
-            <Link href="https://github.com" className="inline-flex items-center gap-1 hover:text-foreground">
+            <Link href="https://github.com" className="inline-flex items-center gap-1 hover:text-foreground" aria-label="Developer GitHub">
               <Github className="h-3.5 w-3.5" />
-              GitHub
+              Developer GitHub
             </Link>
           </div>
         </div>

@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { WatcherLogo } from "@/components/watcher-logo"
-import { bootstrapWorkspace, getCurrentUser, hasAuthToken, register } from "@/lib/api"
+import { bootstrapWorkspace, getCurrentUser, getOAuthStartUrl, hasAuthToken, register } from "@/lib/api"
 
 export default function RegisterPage() {
   return (
@@ -76,7 +76,15 @@ function RegisterPageInner() {
               </div>
               <h1 className="mt-5 text-2xl font-semibold tracking-tight">Create your account</h1>
               <p className="mt-1.5 text-sm text-muted-foreground">Start monitoring your first endpoint in minutes.</p>
-              <form className="mt-7 space-y-4" onSubmit={submit}>
+              <div className="mt-7 grid gap-2">
+                <Button asChild variant="outline" className="h-11 rounded-xl border-border bg-secondary/70">
+                  <a href={getOAuthStartUrl("google")}>Google</a>
+                </Button>
+              </div>
+              <div className="my-6 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                <div className="h-px flex-1 bg-border" /> Email <div className="h-px flex-1 bg-border" />
+              </div>
+              <form className="space-y-4" onSubmit={submit}>
                 <div className="space-y-2">
                   <Label htmlFor="name">Full name</Label>
                   <Input id="name" value={name} onChange={(event) => setName(event.target.value)} required placeholder="Jordan Davis" className="h-11 rounded-xl bg-secondary/70" />
