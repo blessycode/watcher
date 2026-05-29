@@ -50,8 +50,8 @@ export function severityLabel(severity: IncidentSeverity) {
 
 export function statusColor(status: MonitorStatus) {
   return {
-    operational: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
-    degraded: "text-amber-400 bg-amber-500/10 border-amber-500/20",
+    operational: "text-blue-400 bg-blue-500/10 border-blue-500/20",
+    degraded: "text-blue-300 bg-blue-500/10 border-blue-500/20",
     down: "text-red-400 bg-red-500/10 border-red-500/20",
     paused: "text-slate-400 bg-slate-500/10 border-slate-500/20",
   }[status]
@@ -61,7 +61,7 @@ export function severityColor(severity: IncidentSeverity) {
   return {
     critical: "text-red-400 bg-red-500/10 border-red-500/20",
     high: "text-orange-400 bg-orange-500/10 border-orange-500/20",
-    medium: "text-amber-400 bg-amber-500/10 border-amber-500/20",
+    medium: "text-blue-300 bg-blue-500/10 border-blue-500/20",
     low: "text-blue-400 bg-blue-500/10 border-blue-500/20",
   }[severity]
 }

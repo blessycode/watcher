@@ -27,8 +27,8 @@ export function UptimeBars({ className, seed = 1 }: { className?: string; seed?:
           key={i}
           className={cn(
             "flex-1 rounded-sm",
-            s === "op" && "bg-emerald-500/80 hover:bg-emerald-500",
-            s === "deg" && "bg-amber-500/80 hover:bg-amber-500",
+            s === "op" && "bg-blue-500/80 hover:bg-blue-500",
+            s === "deg" && "bg-blue-400/80 hover:bg-blue-400",
             s === "down" && "bg-red-500/80 hover:bg-red-500",
           )}
           title={`Day ${90 - i} · ${s === "op" ? "100%" : s === "deg" ? "98%" : "92%"} uptime`}

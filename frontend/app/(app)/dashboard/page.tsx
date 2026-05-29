@@ -123,7 +123,7 @@ export default function DashboardPage() {
       <section className="rounded border border-white/5 bg-[#111315] p-4">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-start gap-3">
-            <div className={`mt-1 flex h-8 w-8 items-center justify-center rounded border ${overallOk ? "border-[#22C55E]/30 bg-[#22C55E]/10 text-[#22C55E]" : "border-[#F59E0B]/30 bg-[#F59E0B]/10 text-[#F59E0B]"}`}>
+            <div className={`mt-1 flex h-8 w-8 items-center justify-center rounded border ${overallOk ? "border-[#4F8CFF]/30 bg-[#4F8CFF]/10 text-[#4F8CFF]" : "border-[#AFCBFF]/30 bg-[#AFCBFF]/10 text-[#AFCBFF]"}`}>
               {overallOk ? <ShieldCheck className="h-4 w-4" /> : <AlertTriangle className="h-4 w-4" />}
             </div>
             <div>
@@ -229,7 +229,7 @@ export default function DashboardPage() {
                       <Link href={`/monitors/${check.monitor_id}`} className="hover:text-[#4F8CFF]">{monitorById.get(check.monitor_id)?.name ?? check.monitor_id}</Link>
                     </td>
                     <td className="px-2 py-1.5 text-[#9CA3AF]">{check.region}</td>
-                    <td className={`px-2 py-1.5 ${check.success ? "text-[#22C55E]" : "text-[#EF4444]"}`}>{check.status_code ?? "-"}</td>
+                    <td className={`px-2 py-1.5 ${check.success ? "text-[#4F8CFF]" : "text-[#EF4444]"}`}>{check.status_code ?? "-"}</td>
                     <td className="px-2 py-1.5 text-right">{check.latency_ms ? `${check.latency_ms}ms` : "-"}</td>
                   </tr>
                 ))}
@@ -308,7 +308,7 @@ function CardHeader({ title, action }: { title: string; action?: React.ReactNode
 }
 
 function Metric({ icon: Icon, label, value, href, tone = "neutral" }: { icon: any; label: string; value: string; href: string; tone?: "neutral" | "good" | "warn" | "bad" }) {
-  const toneClass = tone === "good" ? "text-[#22C55E]" : tone === "warn" ? "text-[#F59E0B]" : tone === "bad" ? "text-[#EF4444]" : "text-[#4F8CFF]"
+  const toneClass = tone === "good" ? "text-[#4F8CFF]" : tone === "warn" ? "text-[#AFCBFF]" : tone === "bad" ? "text-[#EF4444]" : "text-[#4F8CFF]"
   return (
     <Link href={href} className="block rounded border border-white/5 bg-[#151618] p-3.5 transition-colors hover:border-[#4F8CFF]/30 hover:bg-[#1A1C20]">
       <div className="flex items-center justify-between">

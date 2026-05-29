@@ -5,16 +5,16 @@ type StatusType = "operational" | "degraded" | "down" | "paused" | "unknown"
 const statusConfig: Record<StatusType, { label: string; dot: string; text: string; bg: string; border: string }> = {
   operational: {
     label: "Operational",
-    dot: "bg-[#22C55E]",
-    text: "text-[#22C55E]",
-    bg: "bg-[#22C55E]/10",
+    dot: "bg-[#4F8CFF]",
+    text: "text-[#4F8CFF]",
+    bg: "bg-[#4F8CFF]/10",
     border: "border-white/5",
   },
   degraded: {
     label: "Degraded",
-    dot: "bg-[#F59E0B]",
-    text: "text-[#F59E0B]",
-    bg: "bg-[#F59E0B]/10",
+    dot: "bg-[#AFCBFF]",
+    text: "text-[#AFCBFF]",
+    bg: "bg-[#AFCBFF]/10",
     border: "border-white/5",
   },
   down: {
@@ -59,8 +59,8 @@ export function StatusBadge({ status }: { status: StatusType | string }) {
 
 const methodColors: Record<string, string> = {
   GET:    "bg-[#4F8CFF]/10 text-[#4F8CFF] border-white/5",
-  POST:   "bg-[#22C55E]/10 text-[#22C55E] border-white/5",
-  PUT:    "bg-[#F59E0B]/10 text-[#F59E0B] border-white/5",
+  POST:   "bg-[#4F8CFF]/10 text-[#4F8CFF] border-white/5",
+  PUT:    "bg-[#AFCBFF]/10 text-[#AFCBFF] border-white/5",
   DELETE: "bg-[#EF4444]/10 text-[#EF4444] border-white/5",
   PATCH:  "bg-[#A78BFA]/10 text-[#A78BFA] border-white/5",
 }
@@ -81,7 +81,7 @@ export function MethodBadge({ method }: { method: string }) {
 const severityConfig: Record<string, string> = {
   critical: "bg-[#EF4444]/10 text-[#EF4444] border-white/5",
   high:     "bg-[#F97316]/10 text-[#F97316] border-white/5",
-  medium:   "bg-[#F59E0B]/10 text-[#F59E0B] border-white/5",
+  medium:   "bg-[#AFCBFF]/10 text-[#AFCBFF] border-white/5",
   low:      "bg-[#4F8CFF]/10 text-[#4F8CFF] border-white/5",
 }
 
@@ -104,9 +104,9 @@ export function SeverityBadge({
 
 const incidentStatusConfig: Record<string, string> = {
   investigating: "bg-[#EF4444]/10 text-[#EF4444] border-white/5",
-  identified:    "bg-[#F59E0B]/10 text-[#F59E0B] border-white/5",
+  identified:    "bg-[#AFCBFF]/10 text-[#AFCBFF] border-white/5",
   monitoring:    "bg-[#4F8CFF]/10 text-[#4F8CFF] border-white/5",
-  resolved:      "bg-[#22C55E]/10 text-[#22C55E] border-white/5",
+  resolved:      "bg-[#4F8CFF]/10 text-[#4F8CFF] border-white/5",
 }
 
 const incidentStatusLabel: Record<string, string> = {

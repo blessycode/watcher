@@ -47,7 +47,7 @@ export default function IncidentsPage() {
       <PageHeader title="Incidents" description="Manage outages from first failed check to resolution." />
       <div className="mb-4 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
         <SummaryCard icon={AlertTriangle} iconColor="text-red-400" label="Open incidents" value={open.toString()} sub="Needs attention" />
-        <SummaryCard icon={CheckCircle2} iconColor="text-emerald-400" label="Resolved incidents" value={resolved.toString()} sub="All time" />
+        <SummaryCard icon={CheckCircle2} iconColor="text-blue-400" label="Resolved incidents" value={resolved.toString()} sub="All time" />
         <SummaryCard icon={Clock} iconColor="text-muted-foreground" label="Total incidents" value={incidents.length.toString()} sub="From database" />
       </div>
       {error && <div className="mb-3 rounded border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive">{error}</div>}

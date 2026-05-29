@@ -13,7 +13,7 @@
   --popover: #FFFFFF;
   --popover-foreground: #10131A;
 
-  /* Brand (Accent blue) */
+  /* Brand */
   --primary: #4F8CFF;
   --primary-foreground: #FFFFFF;
 
@@ -28,8 +28,8 @@
   /* Semantic */
   --destructive: #EF4444;
   --destructive-foreground: #FFFFFF;
-  --success: #22C55E;
-  --warning: #F59E0B;
+  --success: #4F8CFF;
+  --warning: #AFCBFF;
 
   /* Structure */
   --border: rgba(15, 23, 42, 0.09);
@@ -38,8 +38,8 @@
 
   /* Charts */
   --chart-1: #4F8CFF;
-  --chart-2: #22C55E;
-  --chart-3: #F59E0B;
+  --chart-2: #4F8CFF;
+  --chart-3: #AFCBFF;
   --chart-4: #EF4444;
   --chart-5: #A78BFA;
 
@@ -58,35 +58,35 @@
 }
 
 .dark {
-  --background: #0F1115;
+  --background: #050608;
   --foreground: #F3F4F6;
-  --card: #181B20;
+  --card: #111318;
   --card-foreground: #F3F4F6;
-  --popover: #181B20;
+  --popover: #111318;
   --popover-foreground: #F3F4F6;
   --primary: #4F8CFF;
   --primary-foreground: #FFFFFF;
-  --secondary: #16181D;
+  --secondary: #080A0F;
   --secondary-foreground: #F3F4F6;
-  --muted: #16181D;
+  --muted: #151820;
   --muted-foreground: #9CA3AF;
-  --accent: #20232A;
+  --accent: #151820;
   --accent-foreground: #F3F4F6;
   --destructive: #EF4444;
   --destructive-foreground: #FFFFFF;
-  --success: #22C55E;
-  --warning: #F59E0B;
-  --border: rgba(255, 255, 255, 0.06);
+  --success: #4F8CFF;
+  --warning: #AFCBFF;
+  --border: rgba(255, 255, 255, 0.08);
   --input: rgba(255, 255, 255, 0.08);
   --ring: #4F8CFF;
   --radius: 0.25rem;
-  --sidebar: #0F1115;
+  --sidebar: #050608;
   --sidebar-foreground: #F3F4F6;
   --sidebar-primary: #4F8CFF;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #20232A;
+  --sidebar-accent: #151820;
   --sidebar-accent-foreground: #F3F4F6;
-  --sidebar-border: rgba(255, 255, 255, 0.06);
+  --sidebar-border: rgba(255, 255, 255, 0.08);
   --sidebar-ring: #4F8CFF;
 }
 
@@ -215,5 +215,57 @@
   }
   @keyframes ping {
     75%, 100% { transform: scale(1.8); opacity: 0; }
+  }
+
+  .watcher-grid-bg {
+    background:
+      linear-gradient(rgba(79, 140, 255, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79, 140, 255, 0.08) 1px, transparent 1px),
+      radial-gradient(circle at 50% 32%, rgba(79, 140, 255, 0.18), transparent 34%),
+      #050608;
+    background-size: 46px 46px, 46px 46px, 100% 100%, 100% 100%;
+  }
+
+  .watcher-grid-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.06), transparent 18%, transparent 72%, rgba(79,140,255,0.06)),
+      radial-gradient(circle at 20% 72%, rgba(79,140,255,0.12), transparent 26%),
+      radial-gradient(circle at 82% 22%, rgba(79,140,255,0.12), transparent 26%);
+  }
+
+  .watcher-grid-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.12;
+    background-image: radial-gradient(circle at center, white 1px, transparent 1px);
+    background-size: 4px 4px;
+    mask-image: linear-gradient(to bottom, transparent, black 18%, black 84%, transparent);
+  }
+
+  .watcher-auth-card {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(180deg, rgba(15, 17, 21, 0.76), rgba(10, 12, 16, 0.62));
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(18px);
+  }
+
+  .watcher-dark-panel {
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: linear-gradient(180deg, #111318, #080A0F);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  .watcher-semantic-glow {
+    background:
+      radial-gradient(circle at 18% 20%, rgba(79, 140, 255, 0.14), transparent 24%),
+      radial-gradient(circle at 84% 18%, rgba(143, 183, 255, 0.10), transparent 28%),
+      radial-gradient(circle at 62% 84%, rgba(79, 140, 255, 0.08), transparent 24%),
+      #050608;
   }
 }

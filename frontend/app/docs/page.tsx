@@ -52,25 +52,26 @@ const monitorPayload = `{
 
 export default function DocsPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur-md">
+    <div className="relative min-h-screen bg-[#050608] text-white">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(79,140,255,0.16),transparent_36%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent_18%)]" />
+      <header className="sticky top-0 z-30 border-b border-white/10 bg-black/55 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 lg:px-6">
           <div className="flex items-center gap-6">
             <Link href="/"><WatcherLogo /></Link>
-            <span className="hidden text-sm text-muted-foreground sm:inline">/ Documentation</span>
+            <span className="hidden text-sm text-zinc-400 sm:inline">/ Documentation</span>
           </div>
           <div className="flex items-center gap-2">
-            <Button asChild size="sm" variant="outline" className="bg-transparent">
+            <Button asChild size="sm" variant="outline" className="border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]">
               <Link href="/dashboard">Dashboard</Link>
             </Button>
-            <Button asChild size="sm">
+            <Button asChild size="sm" className="bg-[#4F8CFF] text-white hover:bg-[#3D7AF0]">
               <Link href="/monitors/new">New monitor</Link>
             </Button>
           </div>
         </div>
       </header>
 
-      <section className="border-b border-border bg-secondary/40">
+      <section className="relative z-10 border-b border-white/10 bg-black/20">
         <div className="mx-auto max-w-4xl px-4 py-14 text-center lg:px-6">
           <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
             <BookOpen className="h-3.5 w-3.5" />
@@ -79,23 +80,23 @@ export default function DocsPage() {
           <h1 className="mt-5 text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
             Watcher Documentation
           </h1>
-          <p className="mx-auto mt-3 max-w-2xl text-pretty text-muted-foreground">
+          <p className="mx-auto mt-3 max-w-2xl text-pretty text-zinc-400">
             Practical examples for registering APIs, running checks, detecting incidents, sending Resend alerts, and deploying Watcher on Render and Vercel.
           </p>
           <div className="relative mx-auto mt-7 max-w-lg">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input className="h-10 pl-9" placeholder="Search visually: monitors, Resend, Render, status pages" />
+            <Input className="h-10 rounded-xl border-white/10 bg-white/[0.08] pl-9 text-white placeholder:text-zinc-500" placeholder="Search monitors, Resend, Render, status pages" />
           </div>
         </div>
       </section>
 
-      <main className="mx-auto grid max-w-7xl gap-8 px-4 py-10 lg:grid-cols-[260px_1fr] lg:px-6">
+      <main className="relative z-10 mx-auto grid max-w-7xl gap-8 px-4 py-10 lg:grid-cols-[260px_1fr] lg:px-6">
         <aside className="lg:sticky lg:top-20 lg:h-[calc(100vh-6rem)]">
-          <nav className="rounded-lg border border-border bg-card p-2">
+          <nav className="watcher-dark-panel rounded-lg p-2">
             {sections.map((section) => {
               const Icon = section.icon
               return (
-                <a key={section.id} href={`#${section.id}`} className="flex items-center gap-2 rounded px-3 py-2 text-sm text-muted-foreground transition hover:bg-secondary hover:text-foreground">
+                <a key={section.id} href={`#${section.id}`} className="flex items-center gap-2 rounded px-3 py-2 text-sm text-zinc-400 transition hover:bg-white/[0.06] hover:text-white">
                   <Icon className="h-4 w-4 text-primary" />
                   {section.title}
                 </a>
@@ -109,14 +110,14 @@ export default function DocsPage() {
             {sections.map((section) => {
               const Icon = section.icon
               return (
-                <a key={section.id} href={`#${section.id}`} className="rounded-lg border border-border bg-card p-4 transition hover:border-primary/35 hover:bg-secondary/60">
+                <a key={section.id} href={`#${section.id}`} className="watcher-dark-panel rounded-lg p-4 transition hover:border-[#4F8CFF]/35 hover:bg-white/[0.06]">
                   <div className="flex items-center gap-2.5">
                     <div className="flex h-8 w-8 items-center justify-center rounded bg-primary/10 text-primary">
                       <Icon className="h-4 w-4" />
                     </div>
                     <div className="font-semibold">{section.title}</div>
                   </div>
-                  <p className="mt-3 text-sm leading-6 text-muted-foreground">{section.body}</p>
+                  <p className="mt-3 text-sm leading-6 text-zinc-400">{section.body}</p>
                 </a>
               )
             })}
@@ -295,7 +296,7 @@ celery -A app.workers.celery_app.celery_app beat --loglevel=info`}
             </div>
           </DocSection>
 
-          <div className="rounded-xl border border-primary/20 bg-primary p-6 text-primary-foreground">
+          <div className="rounded-xl border border-[#4F8CFF]/30 bg-[#4F8CFF] p-6 text-white">
             <div className="text-xl font-semibold">Ready to test a real API?</div>
             <p className="mt-2 max-w-2xl text-sm opacity-90">
               Create a monitor for your hosted API health endpoint, run Check now, then watch the dashboard, checks table, and incident logic update from Postgres.
@@ -312,21 +313,21 @@ celery -A app.workers.celery_app.celery_app beat --loglevel=info`}
 
 function DocSection({ id, title, icon: Icon, children }: { id: string; title: string; icon: any; children: React.ReactNode }) {
   return (
-    <section id={id} className="scroll-mt-20 rounded-xl border border-border bg-card p-5 sm:p-6">
+    <section id={id} className="watcher-dark-panel scroll-mt-20 rounded-xl p-5 sm:p-6">
       <div className="mb-4 flex items-center gap-3">
         <div className="flex h-9 w-9 items-center justify-center rounded bg-primary/10 text-primary">
           <Icon className="h-4.5 w-4.5" />
         </div>
         <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
       </div>
-      <div className="space-y-4 text-sm leading-6 text-muted-foreground">{children}</div>
+      <div className="space-y-4 text-sm leading-6 text-zinc-400">{children}</div>
     </section>
   )
 }
 
 function Example({ title, children }: { title: string; children: string }) {
   return (
-    <div className="overflow-hidden rounded-lg border border-border bg-[#0f172a]">
+    <div className="overflow-hidden rounded-lg border border-white/10 bg-[#080B12]">
       <div className="border-b border-white/10 px-4 py-2 text-xs font-semibold text-slate-300">{title}</div>
       <pre className="overflow-x-auto p-4 text-[12px] leading-6 text-slate-200"><code>{children}</code></pre>
     </div>
@@ -337,11 +338,11 @@ function Steps({ items }: { items: Array<[string, string]> }) {
   return (
     <div className="grid gap-2">
       {items.map(([title, body], index) => (
-        <div key={title} className="flex gap-3 rounded-lg border border-border bg-secondary/50 p-3">
+        <div key={title} className="flex gap-3 rounded-lg border border-white/10 bg-white/[0.04] p-3">
           <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-primary text-xs font-bold text-primary-foreground">{index + 1}</div>
           <div>
-            <div className="font-semibold text-foreground">{title}</div>
-            <div className="text-sm text-muted-foreground">{body}</div>
+            <div className="font-semibold text-white">{title}</div>
+            <div className="text-sm text-zinc-400">{body}</div>
           </div>
         </div>
       ))}
@@ -351,14 +352,14 @@ function Steps({ items }: { items: Array<[string, string]> }) {
 
 function Fact({ icon: Icon, title, text }: { icon: any; title: string; text: string }) {
   return (
-    <div className="rounded-lg border border-border bg-secondary/50 p-4">
+    <div className="rounded-lg border border-white/10 bg-white/[0.04] p-4">
       <Icon className="h-4 w-4 text-primary" />
-      <div className="mt-3 font-semibold text-foreground">{title}</div>
-      <p className="mt-1 text-sm text-muted-foreground">{text}</p>
+      <div className="mt-3 font-semibold text-white">{title}</div>
+      <p className="mt-1 text-sm text-zinc-400">{text}</p>
     </div>
   )
 }
 
 function InlineCode({ children }: { children: React.ReactNode }) {
-  return <code className="rounded bg-secondary px-1.5 py-0.5 font-mono text-xs text-foreground">{children}</code>
+  return <code className="rounded bg-white/[0.08] px-1.5 py-0.5 font-mono text-xs text-white">{children}</code>
 }

@@ -192,7 +192,7 @@ function SidebarNav() {
       <div className="border-t border-white/5 bg-[#090A0B] p-3">
         <a href="/status-pages" className="block cursor-pointer rounded border border-white/5 bg-[#151618] p-2.5 text-xs transition-colors hover:bg-[#1E2024]">
           <div className="flex select-none items-center gap-1.5 font-medium text-[#F3F4F6]">
-            <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", counts.incidents ? "bg-[#F59E0B]" : "bg-[#22C55E]")} />
+            <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", counts.incidents ? "bg-[#AFCBFF]" : "bg-[#4F8CFF]")} />
             {counts.incidents ? `${counts.incidents} open incidents` : "All systems operational"}
           </div>
           <div className="mt-1 select-none text-[10px] font-medium text-[#9CA3AF]">{counts.monitors} monitors · view status pages</div>

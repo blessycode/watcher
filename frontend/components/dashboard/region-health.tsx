@@ -7,7 +7,7 @@ export function RegionHealth() {
         <div key={region.name} className="rounded border border-border bg-card p-3">
           <div className="flex items-center justify-between">
             <span className="font-mono text-[10px] text-muted-foreground">{region.name}</span>
-            <span className={`h-1.5 w-1.5 rounded-full ${region.uptime > 99.5 ? "bg-emerald-500" : region.uptime > 98 ? "bg-amber-500" : "bg-red-500"}`} />
+            <span className={`h-1.5 w-1.5 rounded-full ${region.uptime > 99.5 ? "bg-blue-500" : region.uptime > 98 ? "bg-blue-400" : "bg-red-500"}`} />
           </div>
           <div className="mt-2 flex items-end justify-between">
             <div>

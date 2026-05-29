@@ -115,7 +115,7 @@ export async function register(input: { name: string; email: string; password: s
   return authenticate("/auth/register", { name: input.name, email: input.email, password: input.password })
 }
 
-export function getOAuthStartUrl(provider: "google") {
+export function getOAuthStartUrl(provider: "github" | "google") {
   return `${API_BASE_URL}/auth/oauth/${provider}/start`
 }
 

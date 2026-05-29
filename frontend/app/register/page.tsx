@@ -2,19 +2,17 @@
 
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { ArrowRight, PlusCircle } from "lucide-react"
+import { ArrowLeft, Eye, EyeOff, Github } from "lucide-react"
 import { FormEvent, Suspense, useEffect, useState } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { WatcherLogo } from "@/components/watcher-logo"
 import { bootstrapWorkspace, getCurrentUser, getOAuthStartUrl, hasAuthToken, register } from "@/lib/api"
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={<main className="min-h-screen bg-background p-8 text-sm text-muted-foreground">Loading...</main>}>
+    <Suspense fallback={<main className="min-h-screen bg-black p-8 text-sm text-zinc-500">Loading...</main>}>
       <RegisterPageInner />
     </Suspense>
   )
@@ -23,10 +21,9 @@ export default function RegisterPage() {
 function RegisterPageInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [confirm, setConfirm] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
@@ -38,15 +35,23 @@ function RegisterPageInner() {
     }
   }, [router, searchParams])
 
+  function nameFromEmail(value: string) {
+    const local = value.split("@")[0] || "Watcher User"
+    return local
+      .replace(/[._-]+/g, " ")
+      .split(" ")
+      .filter(Boolean)
+      .map((part) => part[0]?.toUpperCase() + part.slice(1))
+      .join(" ") || "Watcher User"
+  }
+
   async function submit(event: FormEvent) {
     event.preventDefault()
     setLoading(true)
     setError("")
     try {
-      await register({ name, email, password, confirm_password: confirm })
-      toast.success("Account created", {
-        description: "Your Watcher session is ready. Preparing your workspace...",
-      })
+      await register({ name: nameFromEmail(email), email, password, confirm_password: password })
+      toast.success("Account created", { description: "Your Watcher session is ready. Preparing your workspace..." })
       await bootstrapWorkspace().catch(() => undefined)
       router.push(searchParams.get("next") || "/dashboard")
     } catch (err) {
@@ -59,67 +64,115 @@ function RegisterPageInner() {
   }
 
   return (
-    <main className="watcher-radial relative min-h-screen overflow-hidden px-4 py-6 text-foreground">
-      <div className="relative mx-auto flex min-h-[calc(100vh-3rem)] max-w-6xl flex-col">
-        <header className="flex items-center justify-between">
-          <Link href="/"><WatcherLogo /></Link>
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <Button asChild variant="ghost" className="rounded-xl"><Link href="/login">Log in</Link></Button>
+    <AuthFrame>
+      <div className="mx-auto w-full max-w-[520px]">
+        <AuthMark />
+        <div className="mt-7 text-center">
+          <h1 className="text-[28px] font-semibold tracking-[-0.035em] text-white">Create a Watcher account</h1>
+          <p className="mt-2 text-sm text-zinc-400">
+            Already have an account?{" "}
+            <Link href="/login" className="font-semibold text-white hover:underline">Log in.</Link>
+          </p>
+        </div>
+
+        <SocialButtons />
+        <Divider />
+
+        <form className="space-y-5" onSubmit={submit}>
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-[13px] font-medium text-zinc-400">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+              placeholder="you@company.com"
+              className="h-12 rounded-2xl border-white/10 bg-white/[0.09] px-4 text-[15px] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] placeholder:text-zinc-500 focus-visible:border-white/20 focus-visible:ring-white/15"
+            />
           </div>
-        </header>
-        <section className="grid flex-1 items-center gap-8 py-10 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="mx-auto w-full max-w-md lg:mx-0">
-            <div className="rounded-[2rem] border border-border bg-card/90 p-5 shadow-2xl shadow-black/35 backdrop-blur-xl sm:p-7">
-              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-                <PlusCircle className="h-3.5 w-3.5" /> New workspace
-              </div>
-              <h1 className="mt-5 text-2xl font-semibold tracking-tight">Create your account</h1>
-              <p className="mt-1.5 text-sm text-muted-foreground">Start monitoring your first endpoint in minutes.</p>
-              <div className="mt-7 grid gap-2">
-                <Button asChild variant="outline" className="h-11 rounded-xl border-border bg-secondary/70">
-                  <a href={getOAuthStartUrl("google")}>Google</a>
-                </Button>
-              </div>
-              <div className="my-6 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                <div className="h-px flex-1 bg-border" /> Email <div className="h-px flex-1 bg-border" />
-              </div>
-              <form className="space-y-4" onSubmit={submit}>
-                <div className="space-y-2">
-                  <Label htmlFor="name">Full name</Label>
-                  <Input id="name" value={name} onChange={(event) => setName(event.target.value)} required placeholder="Jordan Davis" className="h-11 rounded-xl bg-secondary/70" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Work email</Label>
-                  <Input id="email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required placeholder="you@company.com" className="h-11 rounded-xl bg-secondary/70" />
-                </div>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input id="password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} required placeholder="8+ chars, letters + numbers" className="h-11 rounded-xl bg-secondary/70" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="confirm">Confirm</Label>
-                    <Input id="confirm" type="password" value={confirm} onChange={(event) => setConfirm(event.target.value)} required placeholder="Repeat" className="h-11 rounded-xl bg-secondary/70" />
-                  </div>
-                </div>
-                {error && <div className="rounded border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">{error}</div>}
-                <Button type="submit" disabled={loading} className="h-11 w-full rounded-xl font-bold">
-                  {loading ? "Creating..." : "Create account"} <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </form>
+
+          <div className="space-y-2">
+            <Label htmlFor="password" className="text-[13px] font-medium text-zinc-400">Password</Label>
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                required
+                placeholder="Create a strong password"
+                className="h-12 rounded-2xl border-white/10 bg-white/[0.09] px-4 pr-11 text-[15px] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] placeholder:text-zinc-500 focus-visible:border-white/20 focus-visible:ring-white/15"
+              />
+              <button type="button" onClick={() => setShowPassword((value) => !value)} className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white">
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
             </div>
           </div>
-          <div className="mx-auto max-w-xl lg:mx-0">
-            <h2 className="text-balance text-5xl font-semibold leading-[1.02] tracking-tight sm:text-6xl">
-              Your first monitor should feel instant.
-            </h2>
-            <p className="mt-5 max-w-md text-base leading-7 text-muted-foreground">
-              Add endpoints, connect alerts, and publish a status page backed by your own Postgres database.
-            </p>
-          </div>
-        </section>
+
+          {error && <div className="rounded-xl border border-red-400/20 bg-red-500/10 px-3 py-2 text-xs text-red-200">{error}</div>}
+
+          <Button type="submit" disabled={loading} className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.10] text-[14px] font-bold text-white hover:bg-white/[0.14] disabled:opacity-50">
+            {loading ? "Creating account..." : "Create account"}
+          </Button>
+        </form>
+
+        <p className="mt-8 text-center text-xs text-zinc-500">
+          By signing up, you agree to our{" "}
+          <Link href="/docs" className="text-zinc-300 underline underline-offset-2">Terms</Link>,{" "}
+          <Link href="/docs" className="text-zinc-300 underline underline-offset-2">Acceptable Use</Link>, and{" "}
+          <Link href="/docs" className="text-zinc-300 underline underline-offset-2">Privacy Policy</Link>.
+        </p>
       </div>
+    </AuthFrame>
+  )
+}
+
+function AuthFrame({ children }: { children: React.ReactNode }) {
+  return (
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black px-5 py-10 text-white">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_26%_62%,rgba(79,140,255,0.10),transparent_28%),radial-gradient(circle_at_82%_10%,rgba(79,140,255,0.22),transparent_34%)]" />
+      <div className="absolute -left-40 bottom-[-22rem] h-[44rem] w-[44rem] rotate-[-34deg] rounded-[45%] bg-[radial-gradient(circle_at_70%_30%,rgba(79,140,255,0.66),rgba(79,140,255,0.14)_34%,transparent_64%)] blur-[1px] opacity-80" />
+      <div className="absolute right-[-14rem] top-[-18rem] h-[48rem] w-[48rem] rotate-[24deg] rounded-[45%] bg-[radial-gradient(circle_at_38%_62%,rgba(79,140,255,0.62),rgba(79,140,255,0.10)_36%,transparent_66%)] blur-[1px] opacity-70" />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.88),rgba(0,0,0,0.42)_48%,rgba(0,0,0,0.82))]" />
+      <Link href="/" className="absolute left-6 top-8 inline-flex items-center gap-2 text-sm font-semibold text-zinc-400 transition hover:text-white">
+        <ArrowLeft className="h-4 w-4" />
+        Home
+      </Link>
+      <div className="relative z-10 w-full">{children}</div>
     </main>
+  )
+}
+
+function AuthMark() {
+  return (
+    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-white/15 bg-black/35 shadow-2xl shadow-black/50 backdrop-blur">
+      <img src="/watcher-logo-mark.png" alt="Watcher" className="h-8 w-8 rounded-lg object-cover" />
+    </div>
+  )
+}
+
+function SocialButtons() {
+  return (
+    <div className="mt-7 grid gap-3 sm:grid-cols-2">
+      <a href={getOAuthStartUrl("google")} className="inline-flex h-12 items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/[0.10] text-sm font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition hover:bg-white/[0.14]">
+        <span className="text-lg font-black">G</span>
+        Log in with Google
+      </a>
+      <a href={getOAuthStartUrl("github")} className="inline-flex h-12 items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/[0.10] text-sm font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition hover:bg-white/[0.14]">
+        <Github className="h-4 w-4" />
+        Log in with GitHub
+      </a>
+    </div>
+  )
+}
+
+function Divider() {
+  return (
+    <div className="my-8 flex items-center gap-4 text-sm text-zinc-500">
+      <div className="h-px flex-1 bg-white/10" />
+      or
+      <div className="h-px flex-1 bg-white/10" />
+    </div>
   )
 }

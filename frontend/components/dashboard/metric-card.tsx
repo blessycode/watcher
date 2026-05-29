@@ -34,7 +34,7 @@ export function MetricCard({
         </div>
       </div>
       <div className="mt-1.5 flex items-center gap-1.5 text-[10px]">
-        <span className={cn("inline-flex items-center gap-0.5 font-semibold text-emerald-400")}>
+        <span className={cn("inline-flex items-center gap-0.5 font-semibold text-blue-400")}>
           <TrendingUp className="h-3 w-3" />
           {trend}
         </span>

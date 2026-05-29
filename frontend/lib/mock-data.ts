@@ -516,7 +516,7 @@ export const incidentFrequency = Array.from({ length: 6 }).map((_, i) => ({
 
 export const statusDistribution = [
   { name: "Operational", value: mockMonitors.filter((monitor) => monitor.status === "operational").length, color: "#4F8CFF" },
-  { name: "Degraded", value: mockMonitors.filter((monitor) => monitor.status === "degraded").length, color: "#F59E0B" },
+  { name: "Degraded", value: mockMonitors.filter((monitor) => monitor.status === "degraded").length, color: "#AFCBFF" },
   { name: "Down", value: mockMonitors.filter((monitor) => monitor.status === "down").length, color: "#EF4444" },
   { name: "Paused", value: mockMonitors.filter((monitor) => monitor.status === "paused").length, color: "#9CA3AF" },
 ]

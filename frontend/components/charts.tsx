@@ -49,7 +49,7 @@ export function LatencyChart({ data, height = 240 }: { data: any[]; height?: num
         <XAxis dataKey="time" {...AXIS} interval={3} />
         <YAxis {...AXIS} unit="ms" width={48} />
         <Tooltip {...TOOLTIP_STYLE} />
-        <Line type="monotone" dataKey="p50" stroke="#22C55E" strokeWidth={1.5} dot={false} />
+        <Line type="monotone" dataKey="p50" stroke="#4F8CFF" strokeWidth={1.5} dot={false} />
         <Line type="monotone" dataKey="p95" stroke="#4F8CFF" strokeWidth={1.5} dot={false} />
         <Line type="monotone" dataKey="p99" stroke="#EF4444" strokeWidth={1.5} dot={false} />
       </LineChart>
@@ -87,7 +87,7 @@ export function IncidentChart({ data, height = 220 }: { data: any[]; height?: nu
         <Tooltip {...TOOLTIP_STYLE} />
         <Bar dataKey="critical" stackId="a" fill="#EF4444" />
         <Bar dataKey="high" stackId="a" fill="#F97316" />
-        <Bar dataKey="medium" stackId="a" fill="#F59E0B" />
+        <Bar dataKey="medium" stackId="a" fill="#AFCBFF" />
         <Bar dataKey="low" stackId="a" fill="#4F8CFF" radius={[3, 3, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
@@ -99,8 +99,8 @@ export function StatusDistributionChart({ data, height = 220 }: { data: any[]; h
   
   // Align Segment Colors
   const segmentColors: Record<string, string> = {
-    "Operational": "#22C55E",
-    "Degraded": "#F59E0B",
+    "Operational": "#4F8CFF",
+    "Degraded": "#AFCBFF",
     "Down": "#EF4444",
     "Paused": "#9CA3AF",
   }
@@ -152,9 +152,7 @@ export function StatusDistributionChart({ data, height = 220 }: { data: any[]; h
 export function Sparkline({ data, color = "#4F8CFF" }: { data: any[]; color?: string }) {
   // Translate standard colors to theme variables
   let sparkColor = color
-  if (color === "#16A34A" || color === "#16a34a" || color === "#4ECB71") sparkColor = "#22C55E"
   if (color === "#DC2626" || color === "#dc2626" || color === "#E55C5C") sparkColor = "#EF4444"
-  if (color === "#D97706" || color === "#d97706" || color === "#E2B93B") sparkColor = "#F59E0B"
   if (color === "#2563EB" || color === "#2563eb" || color === "#5E6AD2") sparkColor = "#4F8CFF"
 
   return (

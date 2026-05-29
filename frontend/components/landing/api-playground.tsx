@@ -203,7 +203,7 @@ export function ApiPlayground() {
             onClick={runMonitorCheck}
             disabled={isRunning}
             size="sm"
-            className="rounded bg-[#4F8CFF] hover:bg-[#3B7BE6] text-white px-4 font-semibold shrink-0 shadow-md shadow-[#4F8CFF]/15 border-0 h-8 text-[12px]"
+            className="rounded bg-[#4F8CFF] hover:bg-[#3D7AF0] text-white px-4 font-semibold shrink-0 shadow-md shadow-[#4F8CFF]/15 border-0 h-8 text-[12px]"
           >
             {isRunning ? (
               <>
@@ -233,8 +233,8 @@ export function ApiPlayground() {
           <div className="space-y-1.5">
             {logs.map((log, idx) => {
               let textClass = "text-slate-300"
-              if (log.type === "success") textClass = "text-[#22C55E]"
-              if (log.type === "warning") textClass = "text-[#F59E0B]"
+              if (log.type === "success") textClass = "text-[#4F8CFF]"
+              if (log.type === "warning") textClass = "text-[#AFCBFF]"
               if (log.type === "error") textClass = "text-[#EF4444] font-bold"
               if (log.type === "header") textClass = "text-[#4F8CFF] font-bold"
 

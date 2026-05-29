@@ -19,7 +19,7 @@ export function LandingDashboardPreview() {
           watcher.dev/dashboard
         </div>
         <span className="ml-auto inline-flex items-center gap-1.5 text-[10px] text-[#9CA3AF]">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E]" />
+          <span className="h-1.5 w-1.5 rounded-full bg-[#4F8CFF]" />
           Live
         </span>
       </div>
@@ -52,10 +52,10 @@ export function LandingDashboardPreview() {
           {/* Stat row */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {[
-              { icon: CheckCircle2, label: "Uptime", value: "99.94%", color: "text-[#22C55E]" },
+              { icon: CheckCircle2, label: "Uptime", value: "99.94%", color: "text-[#4F8CFF]" },
               { icon: Activity, label: "Monitors", value: "24", color: "text-[#4F8CFF]" },
               { icon: Clock, label: "Avg Latency", value: "184ms", color: "text-[#F3F4F6]" },
-              { icon: AlertTriangle, label: "Incidents", value: "2", color: "text-[#F59E0B]" },
+              { icon: AlertTriangle, label: "Incidents", value: "2", color: "text-[#AFCBFF]" },
             ].map((s) => {
               const Icon = s.icon
               return (
@@ -82,7 +82,7 @@ export function LandingDashboardPreview() {
                   <div className="text-[10px] text-[#9CA3AF]">P50 · P95 · P99 across regions</div>
                 </div>
                 <div className="flex gap-2 text-[9px] text-[#9CA3AF]">
-                  <span className="inline-flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-[#22C55E]" />P50</span>
+                  <span className="inline-flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-[#4F8CFF]" />P50</span>
                   <span className="inline-flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-[#4F8CFF]" />P95</span>
                   <span className="inline-flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full bg-[#EF4444]" />P99</span>
                 </div>
