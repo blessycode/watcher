@@ -6,15 +6,19 @@ import {
   Bell,
   CheckCircle2,
   Clock3,
+  FileText,
   Github,
   Globe2,
   LineChart,
+  MapPinned,
   ShieldCheck,
+  Target,
 } from "lucide-react"
 import { WatcherLogo } from "@/components/watcher-logo"
 
 const navItems = [
   ["Product", "#product"],
+  ["Platform", "#platform"],
   ["Workflow", "#workflow"],
   ["Status pages", "#status-pages"],
   ["Docs", "/docs"],
@@ -51,6 +55,15 @@ const features = [
     title: "Share public status pages",
     body: "Give customers a clean source of truth for current health, incidents, and service availability.",
   },
+]
+
+const platformPillars = [
+  ["Monitoring", "REST, GraphQL, webhooks, internal services, public websites, auth, payments, and microservices.", Activity],
+  ["Incidents", "Convert failures into trackable incidents with severity, recovery, history, and root-cause context.", AlertTriangle],
+  ["Analytics", "Track uptime, P50/P95/P99 latency, error rate, slowest endpoints, SLA pressure, and trends.", LineChart],
+  ["Developer logs", "Search every check execution by service, status, failure reason, date, region, and latency.", FileText],
+  ["Regions", "Compare API behavior across Harare, Johannesburg, London, Frankfurt, New York, and Singapore.", MapPinned],
+  ["SLA", "Understand monthly downtime budgets, current compliance, and reliability risk by service.", Target],
 ]
 
 const faqs = [
@@ -98,7 +111,7 @@ export default function LandingPage() {
                 API monitoring that keeps teams ahead of downtime.
               </h1>
               <p className="mt-7 max-w-2xl text-[16px] leading-8 text-zinc-400">
-                Watcher gives teams a command center for uptime, latency, incidents, alerts, and customer-facing status pages, so every API has a clear health story.
+                Watcher is an open-source API Reliability Platform for monitoring uptime, latency, incidents, logs, regions, SLA, alerts, and customer-facing status pages.
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
                 <Link href="/register" className="inline-flex h-11 items-center gap-2 rounded-full bg-white px-5 text-sm font-semibold text-black transition hover:bg-zinc-200">
@@ -119,8 +132,8 @@ export default function LandingPage() {
           <div className="mx-auto grid max-w-6xl gap-3 md:grid-cols-4">
             {[
               ["24/7", "API visibility"],
-              ["Live", "latency trends"],
-              ["Fast", "incident alerts"],
+              ["P95", "latency insight"],
+              ["SLA", "reliability budget"],
               ["Public", "status pages"],
             ].map(([value, label]) => (
               <div key={label} className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4">
@@ -152,6 +165,29 @@ export default function LandingPage() {
                   )
                 })}
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="platform" className="border-y border-white/10 bg-[#080A0F] px-4 py-24 lg:px-6">
+          <div className="mx-auto max-w-6xl">
+            <div className="max-w-3xl">
+              <div className="text-sm text-[#4F8CFF]">Platform</div>
+              <h2 className="mt-3 text-balance text-4xl font-semibold leading-tight tracking-[-0.045em]">
+                Beyond uptime checks.
+              </h2>
+              <p className="mt-4 text-sm leading-7 text-zinc-400">
+                Watcher connects monitoring, incident response, performance analytics, developer logs, regional visibility, SLA tracking, and status communication into one reliability workflow.
+              </p>
+            </div>
+            <div className="mt-10 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+              {platformPillars.map(([title, body, Icon]) => (
+                <article key={title as string} className="rounded-2xl border border-white/10 bg-[#111318]/80 p-5">
+                  <Icon className="h-5 w-5 text-[#4F8CFF]" />
+                  <h3 className="mt-5 font-semibold">{title as string}</h3>
+                  <p className="mt-2 text-sm leading-6 text-zinc-500">{body as string}</p>
+                </article>
+              ))}
             </div>
           </div>
         </section>

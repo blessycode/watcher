@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.db.database import engine
 from app.middleware.request_id import RequestIDMiddleware
-from app.routes import alert_channels, analytics, api_keys, auth, incidents, monitors, onboarding, projects, status_pages
+from app.routes import alert_channels, analytics, api_keys, auth, checks, incidents, monitors, onboarding, projects, status_pages
 
 
 app = FastAPI(
@@ -26,6 +26,7 @@ app.add_middleware(RequestIDMiddleware)
 app.include_router(auth.router)
 app.include_router(projects.router)
 app.include_router(monitors.router)
+app.include_router(checks.router)
 app.include_router(incidents.router)
 app.include_router(alert_channels.router)
 app.include_router(status_pages.router)

@@ -2,6 +2,7 @@ import type {
   APIKey,
   AlertChannel,
   Check,
+  CheckLog,
   CreateMonitorInput,
   CreateProjectInput,
   Incident,
@@ -184,6 +185,10 @@ export async function runMonitorCheck(id: string): Promise<Check> {
 
 export async function getMonitorChecks(id: string): Promise<Check[]> {
   return request<Check[]>(`/monitors/${id}/checks`)
+}
+
+export async function getCheckLogs(): Promise<CheckLog[]> {
+  return request<CheckLog[]>("/checks")
 }
 
 export async function getMonitorAnalytics(id: string) {

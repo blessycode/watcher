@@ -10,9 +10,11 @@ import {
   Database,
   Globe,
   KeyRound,
+  MapPinned,
   Search,
   Server,
   Shield,
+  Target,
   Zap,
 } from "lucide-react"
 import { WatcherLogo } from "@/components/watcher-logo"
@@ -27,6 +29,9 @@ const sections = [
   { id: "incidents", icon: AlertTriangle, title: "Incidents", body: "Learn degraded/down logic, auto incident creation, and recovery." },
   { id: "alerts", icon: Bell, title: "Alerts", body: "Configure Resend email delivery and test alert channels." },
   { id: "status-pages", icon: Globe, title: "Status Pages", body: "Publish project health using public status pages." },
+  { id: "logs", icon: Code2, title: "Developer Logs", body: "Search monitor executions by status, latency, error reason, region, and timestamp." },
+  { id: "sla", icon: Target, title: "SLA", body: "Track uptime commitments, downtime budget, and service reliability risk." },
+  { id: "regions", icon: MapPinned, title: "Regions", body: "Compare service behavior across monitoring regions." },
   { id: "deployment", icon: Server, title: "Deployment", body: "Render backend, Vercel frontend, Postgres, Redis, Celery, and Resend." },
   { id: "security", icon: Shield, title: "Security", body: "JWT sessions, ownership rules, URL validation, and production SSRF protection." },
 ]
@@ -263,6 +268,42 @@ Expected success:
 
 Frontend route:
 https://your-watcher.vercel.app/status/core-platform`}
+            </Example>
+          </DocSection>
+
+          <DocSection id="logs" title="Developer Logs" icon={Code2}>
+            <p>
+              Every monitor execution becomes a searchable check log. This gives engineers immediate debugging context without leaving Watcher.
+            </p>
+            <Example title="Log fields">
+{`Timestamp: 2026-05-29T13:45:20Z
+Monitor: Payments API
+Project: Core Platform
+Status: 503
+Latency: 5320ms
+Region: johannesburg
+Reason: Service Unavailable`}
+            </Example>
+            <p>Use the Logs page to search by service, status code, error reason, date, or region.</p>
+          </DocSection>
+
+          <DocSection id="sla" title="SLA Tracking" icon={Target}>
+            <p>SLA turns monitor uptime into an operational commitment. Watcher summarizes current uptime, target SLA, downtime used, downtime budget, and active incident risk.</p>
+            <Example title="SLA example">
+{`Target SLA: 99.90%
+Current SLA: 99.82%
+Monthly downtime used: 78 minutes
+Budget: 43 minutes
+Risk: budget exceeded`}
+            </Example>
+          </DocSection>
+
+          <DocSection id="regions" title="Regional Reliability" icon={MapPinned}>
+            <p>Regions help separate a global outage from a local network problem. Assign monitors to regions and compare checks, failures, uptime, and latency.</p>
+            <Example title="Regional view">
+{`Johannesburg: 99.9% uptime, 184ms avg latency
+London: 100% uptime, 92ms avg latency
+New York: 98.7% uptime, 420ms avg latency`}
             </Example>
           </DocSection>
 

@@ -9,15 +9,18 @@ import {
   Bell,
   CalendarDays,
   ChevronDown,
+  FileText,
   Folders,
   Globe,
   HelpCircle,
   LayoutDashboard,
+  MapPinned,
   Menu,
   Plus,
   Search,
   Settings,
   SlidersHorizontal,
+  Target,
 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { WatcherLogo } from "@/components/watcher-logo"
@@ -46,6 +49,9 @@ const navigation = [
   { name: "Status Pages", href: "/status-pages", icon: Globe, kbd: "S" },
   { name: "Alerts", href: "/alerts", icon: Bell, kbd: "A" },
   { name: "Analytics", href: "/analytics", icon: BarChart3, kbd: "Y" },
+  { name: "Logs", href: "/logs", icon: FileText, kbd: "L" },
+  { name: "SLA", href: "/sla", icon: Target, kbd: "T" },
+  { name: "Regions", href: "/regions", icon: MapPinned, kbd: "R" },
 ]
 
 function initials(name?: string | null, email?: string | null) {

@@ -66,6 +66,12 @@ export interface Check {
   checked_at: string
 }
 
+export interface CheckLog extends Check {
+  monitor_name: string
+  project_id: string
+  project_name: string
+}
+
 export interface Incident {
   id: string
   monitor_id: string
